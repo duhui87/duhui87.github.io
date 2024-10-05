@@ -10,9 +10,13 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="HP 1020曾经是机皇，以便宜耐用著称，但疫情之后价格飙升。">
+<meta name="description" content="# 一、系统安装
+
+N1可以用的系统非常多，目前经试验经典的Armbian_5.77_Aml-s905_Ubuntu_bionic_default_5.0.2_20190401.img兼容性不错。">
 <meta property="og:title" content="[N1盒子] N1 安装共享惠普打印机 HP 1020plus 教程">
-<meta property="og:description" content="HP 1020曾经是机皇，以便宜耐用著称，但疫情之后价格飙升。">
+<meta property="og:description" content="# 一、系统安装
+
+N1可以用的系统非常多，目前经试验经典的Armbian_5.77_Aml-s905_Ubuntu_bionic_default_5.0.2_20190401.img兼容性不错。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://80hou.eu.org//post/%5BN1-he-zi-%5D%20N1%20-an-zhuang-gong-xiang-hui-pu-da-yin-ji-%20HP%201020plus%20-jiao-cheng.html">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/Meekdai/meekdai.github.io/logo64.jpg">
@@ -41,7 +45,17 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     body {padding: 8px;}
     .postTitle{font-size:24px;}
 }
-
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
 </style>
 
 
@@ -73,147 +87,200 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><h1>HP 1020曾经是机皇，以便宜耐用著称，但疫情之后价格飙升。已经比很多带网络功能的打印机都要贵了。专门买新的HP 1020来配合N1作网络打印机就有点不合算了。但是手头如果有HP1020或者二手HP1020价格合适的话，还是可以物尽其用。<br>
-一、系统安装<br>
-N1可以用的系统非常多，目前经试验经典的Armbian_5.77_Aml-s905_Ubuntu_bionic_default_5.0.2_20190401.img兼容性不错。如果是用基于Debian的系统，权限方面容易出问题。<br>
-1、用balenaEtcher软件把img文件刷到U盘，然后把uEnv文件的第一行改为：<br>
-dtb_name=/dtb/meson-gxl-s905d-phicomm-n1.dtb<br>
-2、U盘插入，断电重启N1。如果N1已经是linux系统，可以输入reboot update启动到U盘。<br>
-3、U盘系统启动完成后，输入./install.sh安装到emmc。有一点比较奇怪，我在刷系统的的时候，第一次找不到无线网卡，第二次usb口识别不了设备，第三次重刷就正常了。<br>
-4、配置无线网络<br>
-armbian-config</h1>
-<p>二、安装驱动和服务<br>
-1、修改国内源<br>
-sudo vi /etc/apt/sources.list<br>
-将该文件改为<br>
-deb <a href="https://mirrors.ustc.edu.cn/ubuntu-ports/" rel="nofollow">https://mirrors.ustc.edu.cn/ubuntu-ports/</a> bionic main restricted universe multiverse</p>
-<h1>deb-src <a href="https://mirrors.ustc.edu.cn/ubuntu-ports/" rel="nofollow">https://mirrors.ustc.edu.cn/ubuntu-ports/</a> bionic main main restricted universe multiverse</h1>
-<p>deb <a href="https://mirrors.ustc.edu.cn/ubuntu-ports/" rel="nofollow">https://mirrors.ustc.edu.cn/ubuntu-ports/</a> bionic-updates main restricted universe multiverse</p>
-<h1>deb-src <a href="https://mirrors.ustc.edu.cn/ubuntu-ports/" rel="nofollow">https://mirrors.ustc.edu.cn/ubuntu-ports/</a> bionic-updates main restricted universe multiverse</h1>
-<p>deb <a href="https://mirrors.ustc.edu.cn/ubuntu-ports/" rel="nofollow">https://mirrors.ustc.edu.cn/ubuntu-ports/</a> bionic-backports main restricted universe multiverse</p>
-<h1>deb-src <a href="https://mirrors.ustc.edu.cn/ubuntu-ports/" rel="nofollow">https://mirrors.ustc.edu.cn/ubuntu-ports/</a> bionic-backports main restricted universe multiverse</h1>
-<p>deb <a href="https://mirrors.ustc.edu.cn/ubuntu-ports/" rel="nofollow">https://mirrors.ustc.edu.cn/ubuntu-ports/</a> bionic-security main restricted universe multiverse</p>
-<h1>deb-src <a href="https://mirrors.ustc.edu.cn/ubuntu-ports/" rel="nofollow">https://mirrors.ustc.edu.cn/ubuntu-ports/</a> bionic-security main restricted universe multiverse</h1>
-<p>2、更新系统<br>
-sudo apt-get update</p>
-<p>3、安装cups打印服务<br>
-sudo apt-get install cups<br>
-sudo vi /etc/cups/cupsd.conf<br>
-将cupsd文件中localhost改成0.0.0.0（0.0.0.0意即任意IP地址），Browsing off改成Browsing On，并在四个地方分别添加Allow all，具体如下：<br>
-Listen 0.0.0.0:631<br>
-Listen /var/run/cups/cups.sock</p>
-<h1>Show shared printers on the local network.</h1>
-<p>Browsing On<br>
-BrowseLocalProtocols dnssd</p>
-<h1>Restrict access to the server...</h1>
-
-  Order allow,deny
-  Allow all
-
-<h1>Restrict access to the admin pages...</h1>
-<p>&lt;Location /admin&gt;<br>
-Order allow,deny<br>
-Allow all<br>
-</p>
-<h1>Restrict access to configuration files...</h1>
-<p>&lt;Location /admin/conf&gt;<br>
-AuthType Default<br>
-Require user <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/System/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/System">@System</a><br>
-Order allow,deny<br>
-Allow all<br>
-</p>
-<h1>Restrict access to log files...</h1>
-<p>&lt;Location /admin/log&gt;<br>
-AuthType Default<br>
-Require user <a class="user-mention notranslate" data-hovercard-type="user" data-hovercard-url="/users/System/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="https://github.com/System">@System</a><br>
-Order allow,deny<br>
-Allow all<br>
-<br>
-编辑完成，重启服务<br>
-service cups restart</p>
-<p>4、安装HP打印机驱动<br>
-网上教程普遍安装的是foo2zjs，本文安装的是HP官方的HPLIP<br>
-sudo apt-get install hplip<br>
-然后还需要装插件，为了提升验证速度，修改validation.py文件<br>
-sudo vi /usr/share/hplip/base/validation.py<br>
-pgp_site = 'keyserver.ubuntu.com'<br>
-安装插件，但实际上安装完hp1020打印机还是会缺少属性。不知道原因。<br>
-hp-plugin -i<br>
-输入该安全命令后，会出现一个文本框，里面有HPLIP的版本号。<br>
-如PLUG-IN INSTALLATION FOR HPLIP 3.17.10<br>
-然后如果网速够快，就选d直接网络安装，如果网速不行，就选p就地安装，就地安装所需的文件去下面这个网站：<br>
-<a href="https://www.openprinting.org/download/printdriver/auxfiles/HP/plugins/?C=N;O=D" rel="nofollow">Index of /download/printdriver/auxfiles/HP/plugins (openprinting.org)</a><br>
-找到对应的版本，下载.run和run.asc两个文件</p>
-<p>5、安装airpint及打印机发现。<br>
-apt-get install cups-browsed<br>
-sudo service cups-browsed restart</p>
-<h1>sudo apt-get -y install avahi-daemon avahi-discover libnss-mdns<br>
-sudo service avahi-daemon restart</h1>
-<p>三、配置打印机<br>
-打开浏览器，网址输入N1的IP:631，进入cups配置页面。<br>
-安装打印机，驱动选hpcups。选其hpijs其实也可以。Share框必须勾选上。</p>
-<p>有两个指令很有用，一个是USB连接好打印机，输入lsusb命令可以查看是否已连接到usb。<br>
-root@aml:~# lsusb<br>
-Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub<br>
-Bus 001 Device 002: ID 03f0:2b17 Hewlett-Packard LaserJet 1020<br>
-Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</p>
-<p>一个是hp-info -i，可以查看是否正确连接了打印机，特别是1020是GDI打印机，打印机上电后需要下载固件到打印机，deviceid可以显示固件是否已下载。</p>
-<p>hp:/usb/HP_LaserJet_1020?serial=S44WTQ0</p>
-<p>Device Parameters (dynamic data):<br>
-Parameter                     Value(s)</p>
+<div class="markdown-body" id="postBody"><h1>一、系统安装</h1>
+<p>N1可以用的系统非常多，目前经试验经典的Armbian_5.77_Aml-s905_Ubuntu_bionic_default_5.0.2_20190401.img兼容性不错。如果是用基于Debian的系统，权限方面容易出问题。</p>
+<p>1、用balenaEtcher软件把img文件刷到U盘，然后把uEnv文件的第一行改为：</p>
+<pre class="notranslate"><code class="notranslate">dtb_name=/dtb/meson-gxl-s905d-phicomm-n1.dtb
+</code></pre>
+<p>2、U盘插入，断电重启N1。如果N1已经是linux系统，可以输入reboot update启动到U盘。</p>
+<p>3、U盘系统启动完成后，输入./install.sh安装到emmc。有一点比较奇怪，我在刷系统的的时候，第一次找不到无线网卡，第二次usb口识别不了设备，第三次重刷就正常了。</p>
+<p>4、配置无线网络</p>
+<pre class="notranslate"><code class="notranslate">armbian-config
+</code></pre>
 <hr>
-<p>agent1-ack                    False<br>
-agent1-desc                   Black toner cartridge<br>
-agent1-dvc                    0<br>
-agent1-health                 0<br>
-agent1-health-desc            Good/OK<br>
-agent1-hp-ink                 False<br>
-agent1-id                     0<br>
-agent1-kind                   4<br>
-agent1-known                  False<br>
-agent1-level                  100<br>
-agent1-level-trigger          0<br>
-agent1-sku                    Q2612A<br>
-agent1-type                   1<br>
-agent1-virgin                 False<br>
-back-end                      hp<br>
-cups-printers                 ['HP_LaserJet_1020']<br>
-cups-uri                      hp:/usb/HP_LaserJet_1020?serial=S44WTQ0<br>
-dev-file<br>
-device-state                  1<br>
-device-uri                    hp:/usb/HP_LaserJet_1020?serial=S44WTQ0<br>
-deviceid                      MFG:Hewlett-Packard;MDL:HP LaserJet<br>
-1020;CMD:ACL;CLSRINTER;DES:HP LaserJet<br>
-1020;FWVER:20080222;<br>
-duplexer                      0<br>
-error-state                   0<br>
-host<br>
-in-tray1                      1<br>
-in-tray2                      1<br>
-is-hp                         True<br>
-media-path                    1<br>
-panel                         0<br>
-panel-line1<br>
-panel-line2<br>
-photo-tray                    0<br>
-port                          1<br>
-r                             0<br>
-revision                      254<br>
-rg                            000<br>
-rr                            000000<br>
-rs                            000000000<br>
-serial                        S44WTQ0<br>
-status-code                   1000<br>
-status-desc                   Idle<br>
-supply-door                   1<br>
-top-door                      1</p>
-<p>四、使用<br>
-苹果、安卓或者电脑与N1连接入同一wifi网，苹果和电脑可以默认搜索到打印机，打印无问题。<br>
-安卓手机可以用系统打印、Mopria Print、Android CUPS Print三种打印连接方式，都可以打印。但是用wps打印的时候始终都有字体放大，页面排版错误的问题。不管用哪种驱动和方式都无法解决，用word打则可以。<br>
-另外，关闭打印机电源，再开，打印机等会红绿闪烁，表示打印机被识别，固件在下载了，这种状态下打印机会成功实现热插拔。<br>
-然而，打印机如果是和N1同时通电，或者打印机通电状态下再开N1，则会出现打印机无法工作的现象，原因是hplip使用的libusb和usblp冲突，要么就不用hplip改用foo2zjs，要么就屏蔽usblp，方法如下：<br>
-vi /etc/modprobe.d/blacklistusblp.conf，编辑内容blacklist usblp，设权限644。重启后即完全正常。<br>
-至此，所有的坑全部填完了，日常各种使用完全正常。</p></div>
+<h1>二、安装驱动和服务</h1>
+<h2>1、修改国内源</h2>
+<pre class="notranslate"><code class="notranslate">sudo vi /etc/apt/sources.list
+</code></pre>
+<p>将该文件改为</p>
+<pre lang="deb" data-meta="[https://mirrors.ustc.edu.cn/ubuntu-ports/](https://mirrors.ustc.edu.cn/ubuntu-ports/) bionic main restricted universe multiverse" class="notranslate"><code class="notranslate"># deb-src [https://mirrors.ustc.edu.cn/ubuntu-ports/](https://mirrors.ustc.edu.cn/ubuntu-ports/) bionic main main restricted universe multiverse
+
+deb [https://mirrors.ustc.edu.cn/ubuntu-ports/](https://mirrors.ustc.edu.cn/ubuntu-ports/) bionic-updates main restricted universe multiverse
+
+# deb-src [https://mirrors.ustc.edu.cn/ubuntu-ports/](https://mirrors.ustc.edu.cn/ubuntu-ports/) bionic-updates main restricted universe multiverse
+
+deb [https://mirrors.ustc.edu.cn/ubuntu-ports/](https://mirrors.ustc.edu.cn/ubuntu-ports/) bionic-backports main restricted universe multiverse
+
+# deb-src [https://mirrors.ustc.edu.cn/ubuntu-ports/](https://mirrors.ustc.edu.cn/ubuntu-ports/) bionic-backports main restricted universe multiverse
+
+deb [https://mirrors.ustc.edu.cn/ubuntu-ports/](https://mirrors.ustc.edu.cn/ubuntu-ports/) bionic-security main restricted universe multiverse
+
+# deb-src [https://mirrors.ustc.edu.cn/ubuntu-ports/](https://mirrors.ustc.edu.cn/ubuntu-ports/) bionic-security main restricted universe multiverse
+</code></pre>
+<hr>
+<h2>2、更新系统</h2>
+<pre class="notranslate"><code class="notranslate">sudo apt-get update
+</code></pre>
+<h2>3、安装cups打印服务</h2>
+<pre lang="sudo" data-meta="apt-get install cups" class="notranslate"><code class="notranslate">sudo vi /etc/cups/cupsd.conf
+</code></pre>
+<p>将cupsd文件中localhost改成0.0.0.0（0.0.0.0意即任意IP地址），Browsing off改成Browsing On，并在四个地方分别添加Allow all，具体如下：</p>
+<pre lang="Listen" data-meta="0.0.0.0:631" class="notranslate"><code class="notranslate">Listen /var/run/cups/cups.sock
+
+# Show shared printers on the local network.
+
+Browsing On
+BrowseLocalProtocols dnssd
+
+# Restrict access to the server...
+
+
+
+Order allow,deny
+
+Allow all
+
+
+
+# Restrict access to the admin pages...
+
+
+
+Order allow,deny
+
+Allow all
+
+
+
+# Restrict access to configuration files...
+
+
+
+AuthType Default
+
+Require user @SYSTEM
+
+Order allow,deny
+
+Allow all
+
+
+
+# Restrict access to log files...
+
+
+
+AuthType Default
+
+Require user @SYSTEM
+
+Order allow,deny
+
+Allow all
+
+
+</code></pre>
+<p>编辑完成，重启服务</p>
+<pre class="notranslate"><code class="notranslate">service cups restart
+</code></pre>
+<hr>
+<h2>4、安装HP打印机驱动</h2>
+<p>网上教程普遍安装的是foo2zjs，本文安装的是HP官方的HPLIP</p>
+<pre class="notranslate"><code class="notranslate">sudo apt-get install hplip
+</code></pre>
+<p>然后还需要装插件，为了提升验证速度，修改validation.py文件</p>
+<pre lang="sudo" data-meta="vi /usr/share/hplip/base/validation.py" class="notranslate"><code class="notranslate">pgp_site = 'keyserver.ubuntu.com'
+</code></pre>
+<p>安装插件，但实际上安装完hp1020打印机还是会缺少属性。不知道原因。</p>
+<pre class="notranslate"><code class="notranslate">hp-plugin -i
+</code></pre>
+<p>输入该安全命令后，会出现一个文本框，里面有HPLIP的版本号。</p>
+<p>如PLUG-IN INSTALLATION FOR HPLIP 3.17.10</p>
+<p>然后如果网速够快，就选d直接网络安装，如果网速不行，就选p就地安装，就地安装所需的文件去下面这个网站：<br>
+<a href="https://" rel="nofollow">https://www.openprinting.org/download/printdriver/auxfiles/HP/plugins/?C=N;O=D</a></p>
+<p>找到对应的版本，下载.run和run.asc两个文件</p>
+<h2>5、安装airpint及打印机发现。</h2>
+<pre lang="apt-get" data-meta="install cups-browsed" class="notranslate"><code class="notranslate">sudo service cups-browsed restart
+
+sudo apt-get -y install avahi-daemon avahi-discover libnss-mdns
+
+sudo service avahi-daemon restart
+</code></pre>
+<hr>
+<h1>三、配置打印机</h1>
+<p>打开浏览器，网址输入N1的IP:631，进入cups配置页面。</p>
+<p>安装打印机，驱动选hpcups。选其hpijs其实也可以。Share框必须勾选上。</p>
+<p>有两个指令很有用，一个是USB连接好打印机，输入lsusb命令可以查看是否已连接到usb。</p>
+<pre class="notranslate"><code class="notranslate">root@aml:~# lsusb
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+
+Bus 001 Device 002: ID 03f0:2b17 Hewlett-Packard LaserJet 1020
+
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+</code></pre>
+<p>一个是hp-info -i，可以查看是否正确连接了打印机，特别是1020是GDI打印机，打印机上电后需要下载固件到打印机，deviceid可以显示固件是否已下载。</p>
+<pre class="notranslate"><code class="notranslate">hp:/usb/HP_LaserJet_1020?serial=S44WTQ0
+Device Parameters (dynamic data):
+Parameter                     Value(s)
+
+---
+
+agent1-ack                    False
+agent1-desc                   Black toner cartridge
+agent1-dvc                    0
+agent1-health                 0
+agent1-health-desc            Good/OK
+agent1-hp-ink                 False
+agent1-id                     0
+agent1-kind                   4
+agent1-known                  False
+agent1-level                  100
+agent1-level-trigger          0
+agent1-sku                    Q2612A
+agent1-type                   1
+agent1-virgin                 False
+back-end                      hp
+cups-printers                 ['HP_LaserJet_1020']
+cups-uri                      hp:/usb/HP_LaserJet_1020?serial=S44WTQ0
+dev-file
+device-state                  1
+device-uri                    hp:/usb/HP_LaserJet_1020?serial=S44WTQ0
+deviceid                      MFG:Hewlett-Packard;MDL:HP LaserJet
+1020;CMD:ACL;CLS![](https://www.right.com.cn/FORUM/static/image/smiley/default/tongue.gif)
+
+RINTER;DES:HP LaserJet
+1020;FWVER:20080222;
+duplexer                      0
+error-state                   0
+host
+in-tray1                      1
+in-tray2                      1
+is-hp                         True
+media-path                    1
+panel                         0
+panel-line1
+panel-line2
+photo-tray                    0
+port                          1
+r                             0
+revision                      254
+rg                            000
+rr                            000000
+rs                            000000000
+serial                        S44WTQ0
+status-code                   1000
+status-desc                   Idle
+supply-door                   1
+top-door                      1
+</code></pre>
+<h1>四、使用</h1>
+<p>苹果、安卓或者电脑与N1连接入同一wifi网，苹果和电脑可以默认搜索到打印机，打印无问题。</p>
+<p>安卓手机可以用系统打印、Mopria Print、Android CUPS Print三种打印连接方式，都可以打印。但是用wps打印的时候始终都有字体放大，页面排版错误的问题。不管用哪种驱动和方式都无法解决，用word打则可以。</p>
+<p>另外，关闭打印机电源，再开，打印机等会红绿闪烁，表示打印机被识别，固件在下载了，这种状态下打印机会成功实现热插拔。</p>
+<p>然而，打印机如果是和N1同时通电，或者打印机通电状态下再开N1，则会出现打印机无法工作的现象，原因是hplip使用的libusb和usblp冲突，要么就不用hplip改用foo2zjs，要么就屏蔽usblp，方法如下：</p>
+<pre class="notranslate"><code class="notranslate">vi /etc/modprobe.d/blacklistusblp.conf，编辑内容blacklist usblp，设权限644。重启后即完全正常。
+</code></pre>
+<p>至此，所有的坑全部填完了，日常各种使用完全正常。</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">转载请注明出处</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
@@ -238,7 +305,7 @@ if("02/16/2015"!=""){
 </script></div>
 </body>
 <script>
-var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z'};
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
 var utterancesLoad=0;
 
 let themeSettings={
@@ -311,7 +378,70 @@ function iFrameLoading(){
     }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
 
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
 
 </script>
 <script src='https://blog.meekdai.com/Gmeek/plugins/articletoc.js'></script>
