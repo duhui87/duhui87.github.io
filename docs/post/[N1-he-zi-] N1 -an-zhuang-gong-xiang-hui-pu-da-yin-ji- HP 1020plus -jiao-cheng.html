@@ -10,13 +10,11 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="```markdown
-# 一、系统安装
+<meta name="description" content="# 一、系统安装
 
 N1可以用的系统非常多，目前经试验经典的 `Armbian_5.77_Aml-s905_Ubuntu_bionic_default_5.0.2_20190401.img` 兼容性不错。">
 <meta property="og:title" content="[N1盒子] N1 安装共享惠普打印机 HP 1020plus 教程">
-<meta property="og:description" content="```markdown
-# 一、系统安装
+<meta property="og:description" content="# 一、系统安装
 
 N1可以用的系统非常多，目前经试验经典的 `Armbian_5.77_Aml-s905_Ubuntu_bionic_default_5.0.2_20190401.img` 兼容性不错。">
 <meta property="og:type" content="article">
@@ -89,17 +87,21 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><div class="highlight highlight-text-md"><pre class="notranslate"><span class="pl-mh"># <span class="pl-en">一、系统安装</span></span>
-
-N1可以用的系统非常多，目前经试验经典的 <span class="pl-s">`</span><span class="pl-c1">Armbian_5.77_Aml-s905_Ubuntu_bionic_default_5.0.2_20190401.img</span><span class="pl-s">`</span> 兼容性不错。如果是用基于Debian的系统，权限方面容易出问题。
-
-<span class="pl-s">1</span><span class="pl-v">.</span> 用 <span class="pl-s">`</span><span class="pl-c1">balenaEtcher</span><span class="pl-s">`</span> 软件把 <span class="pl-s">`</span><span class="pl-c1">img</span><span class="pl-s">`</span> 文件刷到U盘，然后把 <span class="pl-s">`</span><span class="pl-c1">uEnv</span><span class="pl-s">`</span> 文件的第一行改为：
-   <span class="pl-s">```</span><span class="pl-en">bash</span>
-   dtb_name=/dtb/meson-gxl-s905d-phicomm-n1.dtb</pre></div>
-<ol start="2">
-<li>U盘插入，断电重启N1。如果N1已经是Linux系统，可以输入 <code class="notranslate">reboot update</code> 启动到U盘。</li>
-<li>U盘系统启动完成后，输入 <code class="notranslate">./install.sh</code> 安装到 <code class="notranslate">emmc</code>。有一点比较奇怪，我在刷系统的时候，第一次找不到无线网卡，第二次USB口识别不了设备，第三次重刷就正常了。</li>
-<li>配置无线网络：
+<div class="markdown-body" id="postBody"><h1>一、系统安装</h1>
+<p>N1可以用的系统非常多，目前经试验经典的 <code class="notranslate">Armbian_5.77_Aml-s905_Ubuntu_bionic_default_5.0.2_20190401.img</code> 兼容性不错。如果是用基于Debian的系统，权限方面容易出问题。</p>
+<ol>
+<li>
+<p>用 <code class="notranslate">balenaEtcher</code> 软件把 <code class="notranslate">img</code> 文件刷到U盘，然后把 <code class="notranslate">uEnv</code> 文件的第一行改为：</p>
+<div class="highlight highlight-source-shell"><pre class="notranslate">dtb_name=/dtb/meson-gxl-s905d-phicomm-n1.dtb</pre></div>
+</li>
+<li>
+<p>U盘插入，断电重启N1。如果N1已经是Linux系统，可以输入 <code class="notranslate">reboot update</code> 启动到U盘。</p>
+</li>
+<li>
+<p>U盘系统启动完成后，输入 <code class="notranslate">./install.sh</code> 安装到 <code class="notranslate">emmc</code>。有一点比较奇怪，我在刷系统的时候，第一次找不到无线网卡，第二次USB口识别不了设备，第三次重刷就正常了。</p>
+</li>
+<li>
+<p>配置无线网络：</p>
 <div class="highlight highlight-source-shell"><pre class="notranslate">armbian-config</pre></div>
 </li>
 </ol>
@@ -107,7 +109,7 @@ N1可以用的系统非常多，目前经试验经典的 <span class="pl-s">`</s
 <h1>二、安装驱动和服务</h1>
 <ol>
 <li>
-<p>修改国内源：</p>
+<p><strong>修改国内源</strong>：</p>
 <div class="highlight highlight-source-shell"><pre class="notranslate">sudo vi /etc/apt/sources.list</pre></div>
 <p>将该文件改为：</p>
 <pre lang="plaintext" class="notranslate"><code class="notranslate">deb https://mirrors.ustc.edu.cn/ubuntu-ports/ bionic main restricted universe multiverse
@@ -121,11 +123,11 @@ deb https://mirrors.ustc.edu.cn/ubuntu-ports/ bionic-security main restricted un
 </code></pre>
 </li>
 <li>
-<p>更新系统：</p>
+<p><strong>更新系统</strong>：</p>
 <div class="highlight highlight-source-shell"><pre class="notranslate">sudo apt-get update</pre></div>
 </li>
 <li>
-<p>安装CUPS打印服务：</p>
+<p><strong>安装CUPS打印服务</strong>：</p>
 <div class="highlight highlight-source-shell"><pre class="notranslate">sudo apt-get install cups
 sudo vi /etc/cups/cupsd.conf</pre></div>
 <p>将 <code class="notranslate">cupsd</code> 文件中 <code class="notranslate">localhost</code> 改成 <code class="notranslate">0.0.0.0</code>（0.0.0.0 意即任意IP地址），<code class="notranslate">Browsing off</code> 改成 <code class="notranslate">Browsing On</code>，并在四个地方分别添加 <code class="notranslate">Allow all</code>，具体如下：</p>
@@ -168,7 +170,7 @@ BrowseLocalProtocols dnssd
 <div class="highlight highlight-source-shell"><pre class="notranslate">service cups restart</pre></div>
 </li>
 <li>
-<p>安装HP打印机驱动：<br>
+<p><strong>安装HP打印机驱动</strong>：<br>
 网上教程普遍安装的是 <code class="notranslate">foo2zjs</code>，本文安装的是HP官方的 <code class="notranslate">HPLIP</code>：</p>
 <div class="highlight highlight-source-shell"><pre class="notranslate">sudo apt-get install hplip</pre></div>
 <p>然后还需要装插件，为了提升验证速度，修改 <code class="notranslate">validation.py</code> 文件：</p>
@@ -181,7 +183,7 @@ BrowseLocalProtocols dnssd
 找到对应的版本，下载 <code class="notranslate">.run</code> 和 <code class="notranslate">.run.asc</code> 两个文件。</p>
 </li>
 <li>
-<p>安装AirPrint及打印机发现：</p>
+<p><strong>安装AirPrint及打印机发现</strong>：</p>
 <div class="highlight highlight-source-shell"><pre class="notranslate">apt-get install cups-browsed
 sudo service cups-browsed restart
 
@@ -247,15 +249,14 @@ Device Parameters (dynamic data):
   status-code                   1000                                                      
   status-desc                   Idle                                                      
   supply-door                   1                                                         
-  top-door                      1   
+  top-door                      1
 </code></pre>
 <hr>
 <h1>四、使用</h1>
 <p>苹果、安卓或者电脑与N1连接入同一WiFi网，苹果和电脑可以默认搜索到打印机，打印无问题。安卓手机可以用系统打印、Mopria Print、Android CUPS Print三种打印连接方式，都可以打印。但是用WPS打印的时候始终都有字体放大，页面排版错误的问题。不管用哪种驱动和方式都无法解决，用Word打则可以。</p>
 <p>另外，关闭打印机电源，再开，打印机等会红绿闪烁，表示打印机被识别，固件在下载了，这种状态下打印机会成功实现热插拔。然而，打印机如果是和N1同时通电，或者打印机通电状态下再开N1，则会出现打印机无法工作的现象，原因是HPLIP使用的 <code class="notranslate">libusb</code> 和 <code class="notranslate">usblp</code> 冲突，要么就不用HPLIP改用 <code class="notranslate">foo2zjs</code>，要么就屏蔽 <code class="notranslate">usblp</code>，方法如下：</p>
 <div class="highlight highlight-source-shell"><pre class="notranslate">vi /etc/modprobe.d/blacklistusblp.conf</pre></div>
-<p>编辑内容 <code class="notranslate">blacklist usblp</code>，设权限644。重启后即完全正常。</p>
-<p>至此，所有的坑全部填完了，日常各种使用完全正常。</p></div>
+<p>编辑内容 <code class="notranslate">blacklist usblp</code>，设权限644。重启后即完全正常。</p></div>
 <div style="font-size:small;margin-top:8px;float:right;">转载请注明出处</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
