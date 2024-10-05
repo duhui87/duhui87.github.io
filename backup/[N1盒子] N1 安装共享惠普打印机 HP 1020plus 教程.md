@@ -156,7 +156,7 @@ hp-plugin -i
 如PLUG-IN INSTALLATION FOR HPLIP 3.17.10
 
 然后如果网速够快，就选d直接网络安装，如果网速不行，就选p就地安装，就地安装所需的文件去下面这个网站：
-[https://www.openprinting.org/download/printdriver/auxfiles/HP/plugins/?C=N;O=D](https://)
+`openprinting.org/download/printdriver/auxfiles/HP/plugins/?C=N;O=D`
 
 找到对应的版本，下载.run和run.asc两个文件
 
